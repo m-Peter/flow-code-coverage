@@ -1,5 +1,7 @@
 # Cadence Testing Framework & Code Coverage
 
+![CI](https://github.com/m-Peter/flow-code-coverage/actions/workflows/ci.yml/badge.svg)
+
 [![codecov](https://codecov.io/gh/m-Peter/flow-code-coverage/branch/enable-commented-test-cases/graph/badge.svg?token=5GWD5NHEKF)](https://codecov.io/gh/m-Peter/flow-code-coverage)
 
 ## Requirements
