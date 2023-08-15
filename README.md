@@ -1,5 +1,7 @@
 # Cadence Testing Framework & Code Coverage
 
+[![codecov](https://codecov.io/gh/m-Peter/flow-code-coverage/branch/enable-commented-test-cases/graph/badge.svg?token=5GWD5NHEKF)](https://codecov.io/gh/m-Peter/flow-code-coverage)
+
 ## Requirements
 
 Make sure that you have installed the minimum required version of `flow-cli`:
