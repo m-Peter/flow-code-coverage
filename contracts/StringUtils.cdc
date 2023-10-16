@@ -1,6 +1,6 @@
 // Copied from https://github.com/green-goo-dao/flow-utils/blob/main/cadence/contracts/StringUtils.cdc
 
-import ArrayUtils from "ArrayUtils.cdc"
+import "ArrayUtils"
 
 pub contract StringUtils {
 
@@ -38,7 +38,7 @@ pub contract StringUtils {
     }
 
     pub fun hasPrefix(_ s: String, _ prefix: String): Bool {
-        return s.length >= prefix.length && s.slice(from:0, upTo: prefix.length) == prefix
+        return s.length >= prefix.length && s.slice(from: 0, upTo: prefix.length) == prefix
     }
 
     pub fun hasSuffix(_ s: String, _ suffix: String): Bool {

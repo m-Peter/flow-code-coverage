@@ -1,18 +1,33 @@
 {
-  "emulators": {
-    "default": {
-      "port": 3569,
-      "serviceAccount": "emulator-account"
+  "contracts": {
+    "ApprovalVoting": {
+      "source": "contracts/ApprovalVoting.cdc",
+      "aliases": {
+        "testing": "0x0000000000000007"
+      }
+    },
+    "ArrayUtils": {
+      "source": "contracts/ArrayUtils.cdc",
+      "aliases": {
+        "testing": "0x0000000000000007"
+      }
+    },
+    "FooContract": {
+      "source": "contracts/FooContract.cdc",
+      "aliases": {
+        "testing": "0x0000000000000007"
+      }
+    },
+    "StringUtils": {
+      "source": "contracts/StringUtils.cdc",
+      "aliases": {
+        "testing": "0x0000000000000007"
+      }
     }
   },
-  "contracts": {
-    "FooContract": "./contracts/FooContract.cdc",
-    "ArrayUtils": "./contracts/ArrayUtils.cdc",
-    "StringUtils": "./contracts/StringUtils.cdc",
-    "ApprovalVoting": "./contracts/ApprovalVoting.cdc"
-  },
   "networks": {
-    "emulator": "127.0.0.1:3569"
+    "emulator": "127.0.0.1:3569",
+    "testing": "127.0.0.1:3569"
   },
   "accounts": {
     "emulator-account": {
