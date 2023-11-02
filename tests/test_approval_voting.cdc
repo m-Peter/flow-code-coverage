@@ -1,80 +1,72 @@
 import Test
+import BlockchainHelpers
+import "ApprovalVoting"
 
-pub let blockchain = Test.newEmulatorBlockchain()
-pub let admin = blockchain.createAccount()
-pub let voter = blockchain.createAccount()
+access(all) let admin = Test.getAccount(0x0000000000000007)
+access(all) let voter = Test.createAccount()
 
-pub fun setup() {
-    blockchain.useConfiguration(Test.Configuration({
-        "../contracts/ApprovalVoting.cdc": admin.address
-    }))
-
-    let code = Test.readFile("../contracts/ApprovalVoting.cdc")
-    let err = blockchain.deployContract(
+access(all)
+fun setup() {
+    let err = Test.deployContract(
         name: "ApprovalVoting",
-        code: code,
-        account: admin,
+        path: "../contracts/ApprovalVoting.cdc",
         arguments: []
     )
-
     Test.expect(err, Test.beNil())
 }
 
-pub fun testInitializeEmptyProposals() {
+access(all)
+fun testInitializeEmptyProposals() {
     let proposals: [String] = []
-    let code = Test.readFile("../transactions/initialize_proposals.cdc")
-    let tx = Test.Transaction(
-        code: code,
-        authorizers: [admin.address],
-        signers: [admin],
-        arguments: [proposals]
+    let txResult = executeTransaction(
+        "../transactions/initialize_proposals.cdc",
+        [proposals],
+        admin
     )
 
-    let result = blockchain.executeTransaction(tx)
-
-    // Fails with error: pre-condition failed: Cannot initialize with no proposals
-    Test.expect(result, Test.beFailed())
+    Test.expect(txResult, Test.beFailed())
+    Test.assertError(
+        txResult,
+        errorMessage: "Cannot initialize with no proposals"
+    )
 }
 
-pub fun testInitializeProposals() {
+access(all)
+fun testInitializeProposals() {
     let proposals = [
         "Longer Shot Clock",
         "Trampolines instead of hardwood floors"
     ]
-    let code = Test.readFile("../transactions/initialize_proposals.cdc")
-    let tx = Test.Transaction(
-        code: code,
-        authorizers: [admin.address],
-        signers: [admin],
-        arguments: [proposals]
+    let txResult = executeTransaction(
+        "../transactions/initialize_proposals.cdc",
+        [proposals],
+        admin
     )
 
-    let result = blockchain.executeTransaction(tx)
+    Test.expect(txResult, Test.beSucceeded())
 
-    Test.expect(result, Test.beSucceeded())
-
-    let typ = CompositeType("A.01cf0e2f2f715450.ApprovalVoting.ProposalsInitialized")!
-    let events = blockchain.eventsOfType(typ)
+    let events = Test.eventsOfType(Type<ApprovalVoting.ProposalsInitialized>())
     Test.assertEqual(1, events.length)
 }
 
-pub fun testProposalsImmutability() {
+access(all)
+fun testProposalsImmutability() {
     let proposals = ["Add some more options"]
-    let code = Test.readFile("../transactions/initialize_proposals.cdc")
-    let tx = Test.Transaction(
-        code: code,
-        authorizers: [admin.address],
-        signers: [admin],
-        arguments: [proposals]
+    let txResult = executeTransaction(
+        "../transactions/initialize_proposals.cdc",
+        [proposals],
+        admin
     )
 
-    let result = blockchain.executeTransaction(tx)
-
-    // Fails with error: pre-condition failed: Proposals can only be initialized once
-    Test.expect(result, Test.beFailed())
+    Test.expect(txResult, Test.beFailed())
+    Test.assertError(
+        txResult,
+        errorMessage: "Proposals can only be initialized once"
+    )
 }
 
-pub fun testIssueBallot() {
+access(all)
+fun testIssueBallot() {
     let code = Test.readFile("../transactions/issue_ballot.cdc")
     let tx = Test.Transaction(
         code: code,
@@ -83,49 +75,47 @@ pub fun testIssueBallot() {
         arguments: []
     )
 
-    let result = blockchain.executeTransaction(tx)
+    let txResult = Test.executeTransaction(tx)
 
-    Test.expect(result, Test.beSucceeded())
+    Test.expect(txResult, Test.beSucceeded())
 }
 
-pub fun testCastVoteOnMissingProposal() {
-    let code = Test.readFile("../transactions/cast_vote.cdc")
-    let tx = Test.Transaction(
-        code: code,
-        authorizers: [voter.address],
-        signers: [voter],
-        arguments: [2]
+access(all)
+fun testCastVoteOnMissingProposal() {
+    let txResult = executeTransaction(
+        "../transactions/cast_vote.cdc",
+        [2],
+        voter
     )
 
-    let result = blockchain.executeTransaction(tx)
-
-    // Fails with error: pre-condition failed: Cannot vote for a proposal that doesn't exist
-    Test.expect(result, Test.beFailed())
+    Test.expect(txResult, Test.beFailed())
+    Test.assertError(
+        txResult,
+        errorMessage: "Cannot vote for a proposal that doesn't exist"
+    )
 }
 
-pub fun testCastVote() {
-    let code = Test.readFile("../transactions/cast_vote.cdc")
-    let tx = Test.Transaction(
-        code: code,
-        authorizers: [voter.address],
-        signers: [voter],
-        arguments: [1]
+access(all)
+fun testCastVote() {
+    let txResult = executeTransaction(
+        "../transactions/cast_vote.cdc",
+        [1],
+        voter
     )
 
-    let result = blockchain.executeTransaction(tx)
+    Test.expect(txResult, Test.beSucceeded())
 
-    Test.expect(result, Test.beSucceeded())
-
-    let typ = CompositeType("A.01cf0e2f2f715450.ApprovalVoting.VoteCasted")!
-    let events = blockchain.eventsOfType(typ)
+    let events = Test.eventsOfType(Type<ApprovalVoting.VoteCasted>())
     Test.assertEqual(1, events.length)
+
+    let event = events[0] as! ApprovalVoting.VoteCasted
+    Test.assertEqual("Trampolines instead of hardwood floors", event.proposal)
 }
 
-pub fun testViewVotes() {
-    let code = Test.readFile("../scripts/view_votes.cdc")
-
-    let result = blockchain.executeScript(code, [])
-    let votes = (result.returnValue as! {Int: Int}?)!
+access(all)
+fun testViewVotes() {
+    let scriptResult = executeScript("../scripts/view_votes.cdc", [])
+    let votes = (scriptResult.returnValue as! {Int: Int}?)!
 
     let expected = {0: 0, 1: 1}
     Test.assertEqual(expected, votes)

@@ -1,9 +1,18 @@
 import Test
 import "FooContract"
 
-pub let foo = FooContract()
+access(all)
+fun setup() {
+    let err = Test.deployContract(
+        name: "FooContract",
+        path: "../contracts/FooContract.cdc",
+        arguments: []
+    )
+    Test.expect(err, Test.beNil())
+}
 
-pub fun testGetIntegerTrait() {
+access(all)
+fun testGetIntegerTrait() {
     // Arrange
     // TODO: Uncomment the line below, to see how code coverage changes.
     let testInputs: {Int: String} = {
@@ -20,17 +29,18 @@ pub fun testGetIntegerTrait() {
 
     for input in testInputs.keys {
         // Act
-        let result = foo.getIntegerTrait(input)
+        let result = FooContract.getIntegerTrait(input)
 
         // Assert
         Test.assertEqual(result, testInputs[input]!)
     }
 }
 
-pub fun testAddSpecialNumber() {
+access(all)
+fun testAddSpecialNumber() {
     // Act
-    foo.addSpecialNumber(78557, "Sierpinski")
+    FooContract.addSpecialNumber(78557, "Sierpinski")
 
     // Assert
-    Test.assertEqual("Sierpinski", foo.getIntegerTrait(78557))
+    Test.assertEqual("Sierpinski", FooContract.getIntegerTrait(78557))
 }
