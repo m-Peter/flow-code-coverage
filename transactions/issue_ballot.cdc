@@ -6,9 +6,9 @@ import ApprovalVoting from "../contracts/ApprovalVoting.cdc"
 // so it can access their storage.
 
 transaction {
-    prepare(admin: AuthAccount, voter: AuthAccount) {
+    prepare(admin: auth(BorrowValue) &Account, voter: auth(SaveValue) &Account) {
         // Borrow a reference to the admin Resource
-        let adminRef = admin.borrow<&ApprovalVoting.Administrator>(
+        let adminRef = admin.storage.borrow<&ApprovalVoting.Administrator>(
             from: /storage/VotingAdmin
         )!
 
@@ -17,7 +17,7 @@ transaction {
         let ballot <- adminRef.issueBallot()
 
         // store that ballot in the voter's account storage
-        voter.save<@ApprovalVoting.Ballot>(<-ballot, to: /storage/Ballot)
+        voter.storage.save<@ApprovalVoting.Ballot>(<-ballot, to: /storage/Ballot)
 
         log("Ballot transferred to voter")
     }

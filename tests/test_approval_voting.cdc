@@ -108,8 +108,8 @@ fun testCastVote() {
     let events = Test.eventsOfType(Type<ApprovalVoting.VoteCasted>())
     Test.assertEqual(1, events.length)
 
-    let event = events[0] as! ApprovalVoting.VoteCasted
-    Test.assertEqual("Trampolines instead of hardwood floors", event.proposal)
+    let evt = events[0] as! ApprovalVoting.VoteCasted
+    Test.assertEqual("Trampolines instead of hardwood floors", evt.proposal)
 }
 
 access(all)

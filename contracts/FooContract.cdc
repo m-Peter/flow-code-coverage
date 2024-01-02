@@ -1,5 +1,5 @@
-pub contract FooContract {
-    pub let specialNumbers: {Int: String}
+access(all) contract FooContract {
+    access(all) let specialNumbers: {Int: String}
 
     init() {
         // https://sites.google.com/site/mathematicsmiscellany/very-special-numbers
@@ -10,11 +10,13 @@ pub contract FooContract {
         }
     }
 
-    pub fun addSpecialNumber(_ n: Int, _ trait: String) {
+    access(all)
+    fun addSpecialNumber(_ n: Int, _ trait: String) {
         self.specialNumbers[n] = trait
     }
 
-    pub fun getIntegerTrait(_ n: Int): String {
+    access(all)
+    fun getIntegerTrait(_ n: Int): String {
         if n < 0 {
             return "Negative"
         } else if n == 0 {
