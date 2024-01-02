@@ -5,9 +5,9 @@ import ApprovalVoting from "../contracts/ApprovalVoting.cdc"
 // smart contract.
 
 transaction(proposal: Int) {
-    prepare(voter: AuthAccount) {
+    prepare(voter: auth(LoadValue) &Account) {
         // Take the voter's ballot our of storage
-        let ballot <- voter.load<@ApprovalVoting.Ballot>(
+        let ballot <- voter.storage.load<@ApprovalVoting.Ballot>(
             from: /storage/Ballot
         )!
 

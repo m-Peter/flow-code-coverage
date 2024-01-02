@@ -52,10 +52,10 @@ fun testTransform() {
     ]
 
     // Act
-    ArrayUtils.transform(&tokens as &[AnyStruct], fun (t: AnyStruct): AnyStruct {
-        let token = t as! Token
+    ArrayUtils.transform(&tokens, fun (t: AnyStruct): AnyStruct {
+        let token = t as! &Token
         token.setBalance(token.balance * 2)
-        return token
+        return Token(id: token.id, balance: token.balance)
     })
 
     // Assert

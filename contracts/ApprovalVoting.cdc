@@ -15,31 +15,31 @@
 /// A user can choose their votes and cast them with the `cast_vote.cdc`
 /// transaction.
 ///
-pub contract ApprovalVoting {
+access(all) contract ApprovalVoting {
 
     // List of proposals to be approved.
-    pub var proposals: [String]
+    access(all) var proposals: [String]
 
     // Number of votes per proposal.
-    pub let votes: {Int: Int}
+    access(all) let votes: {Int: Int}
 
     // Event emitted when proposals are initialized by the admin.
-    pub event ProposalsInitialized(proposals: [String])
+    access(all) event ProposalsInitialized(proposals: [String])
 
     // Event emitted when users cast a vote on a proposal.
-    pub event VoteCasted(proposal: String)
+    access(all) event VoteCasted(proposal: String)
 
     /// This is the resource that is issued to users.
     /// When a user gets a Ballot object, they call the `vote` function
     /// to include their votes, and then cast it in the smart contract
     /// using the `cast` function to have their vote included in the polling.
-    pub resource Ballot {
+    access(all) resource Ballot {
 
         // Array of all the proposals.
-        pub let proposals: [String]
+        access(all) let proposals: [String]
 
         // Corresponds to an array index in proposals after a vote.
-        pub let choices: {Int: Bool}
+        access(all) let choices: {Int: Bool}
 
         init() {
             self.proposals = ApprovalVoting.proposals
@@ -54,7 +54,8 @@ pub contract ApprovalVoting {
         }
 
         // Modifies the ballot to indicate which proposals it is voting for.
-        pub fun vote(proposal: Int) {
+        access(all)
+        fun vote(proposal: Int) {
             pre {
                 proposal <= (self.proposals.length - 1): "Cannot vote for a proposal that doesn't exist"
             }
@@ -64,10 +65,11 @@ pub contract ApprovalVoting {
 
     /// Resource that the Administrator of the vote controls to initialize
     /// the proposals and to pass out ballot resources to voters.
-    pub resource Administrator {
+    access(all) resource Administrator {
 
         // Function to initialize all the proposals for the voting.
-        pub fun initializeProposals(_ proposals: [String]) {
+        access(all)
+        fun initializeProposals(_ proposals: [String]) {
             pre {
                 ApprovalVoting.proposals.length == 0: "Proposals can only be initialized once"
                 proposals.length > 0: "Cannot initialize with no proposals"
@@ -86,14 +88,16 @@ pub contract ApprovalVoting {
 
         // The admin calls this function to create a new Ballot
         // that can be transferred to another user.
-        pub fun issueBallot(): @Ballot {
+        access(all)
+        fun issueBallot(): @Ballot {
             return <-create Ballot()
         }
     }
 
     // A user moves their ballot to this function in the contract where
     // its votes are tallied and the ballot is destroyed.
-    pub fun cast(ballot: @Ballot) {
+    access(all)
+    fun cast(ballot: @Ballot) {
         var proposal = ""
         var index = 0
         // Look through the ballot.
@@ -118,7 +122,7 @@ pub contract ApprovalVoting {
         self.proposals = []
         self.votes = {}
 
-        self.account.save<@Administrator>(
+        self.account.storage.save<@Administrator>(
             <-create Administrator(),
             to: /storage/VotingAdmin
         )

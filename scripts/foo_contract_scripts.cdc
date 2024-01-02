@@ -1,6 +1,7 @@
 import FooContract from "../contracts/FooContract.cdc"
 
-pub fun main(): Bool {
+access(all)
+fun main(): Bool {
     let testInputs: {Int: String} = {
         -1: "Negative",
         0: "Zero",

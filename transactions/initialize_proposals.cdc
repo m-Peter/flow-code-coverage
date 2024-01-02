@@ -4,9 +4,9 @@ import ApprovalVoting from "../contracts/ApprovalVoting.cdc"
 // to create new proposals for voting and save them to the smart contract.
 
 transaction(proposals: [String]) {
-    prepare(admin: AuthAccount) {
+    prepare(admin: auth(BorrowValue) &Account) {
         // Borrow a reference to the admin Resource.
-        let adminRef = admin.borrow<&ApprovalVoting.Administrator>(
+        let adminRef = admin.storage.borrow<&ApprovalVoting.Administrator>(
             from: /storage/VotingAdmin
         )!
 
