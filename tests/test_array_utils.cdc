@@ -52,21 +52,11 @@ fun testTransform() {
     ]
 
     // Act
-    // ArrayUtils.transform(&tokens as auth(Mutate) &[AnyStruct], fun (t: AnyStruct): AnyStruct {
-    //     let token = t as! &Token
-    //     token.setBalance(token.balance * 2)
-    //     return token
-    // })
-    // Fails with: error: invalid container update: expected a subtype of `Token`, found `&Token`
-    // fun transform(_ array: auth(Mutate) &[AnyStruct], _ f: fun(AnyStruct): AnyStruct) {
-    //    for i in self.range(0, array.length) {
-    //        array[i] = f(array[i]) // the error is here
-    //    }
-    // }
-    let tokensRef: auth(Mutate) &[Token] = &tokens
-    for token in tokensRef {
+    ArrayUtils.transform(&tokens as auth(Mutate) &[AnyStruct], fun (t: AnyStruct): AnyStruct {
+        let token = t as! &Token
         token.setBalance(token.balance * 2)
-    }
+        return Token(id: token.id, balance: token.balance)
+    })
 
     // Assert
     let expected = [
