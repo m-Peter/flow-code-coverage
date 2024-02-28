@@ -20,11 +20,9 @@ jobs:
       with:
         go-version: 1.20
     - name: Install Flow CLI
-      run: bash -ci "$(curl -fsSL https://raw.githubusercontent.com/onflow/flow-cli/master/install.sh)"
+      run: bash -ci "$(curl -fsSL https://raw.githubusercontent.com/onflow/flow-cli/master/install.sh)" -- v1.12.0-cadence-v1.0.0-M8
     - name: Run tests
       run: flow test --cover --covercode="contracts" --coverprofile="coverage.lcov" tests/test_*.cdc
-    - name: Normalize coverage report filepaths
-      run : sh ./normalize_coverage_report.sh
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v3
       env:
