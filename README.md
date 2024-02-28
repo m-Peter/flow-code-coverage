@@ -9,14 +9,14 @@ Make sure that you have installed the minimum required version of `flow-cli`:
 ```bash
 flow version
 
-Version: v1.3.1
-Commit: 9f622977c3dff5381dbaf49fa7984805e34649d3
+Version: v1.12.0-cadence-v1.0.0-M8
+Commit: c7eea84bd6992f86a9cc43f74abce22efac3185b
 ```
 
 To install it, simply run:
 
 ```bash
-sh -ci "$(curl -fsSL https://raw.githubusercontent.com/onflow/flow-cli/master/install.sh)" -- v1.5.0
+sh -ci "$(curl -fsSL https://raw.githubusercontent.com/onflow/flow-cli/master/install.sh)" -- v1.12.0-cadence-v1.0.0-M8
 ```
 
 ## For Testing
@@ -42,32 +42,34 @@ we can consult the auto-generated `coverage.json` file:
 ```json
 {
   "coverage": {
-    "A.0000000000000007.FooContract": {
+    "contracts/FooContract.cdc": {
       "line_hits": {
-        "14": 1,
-        "18": 9,
-        "19": 1,
-        "20": 8,
+        "15": 1,
+        "20": 9,
         "21": 1,
-        "22": 7,
+        "22": 8,
         "23": 1,
-        "24": 6,
+        "24": 7,
         "25": 1,
-        "26": 5,
-        "27": 0,
-        "30": 5,
-        "31": 4,
-        "34": 1,
+        "26": 6,
+        "27": 1,
+        "28": 5,
+        "29": 0,
+        "32": 5,
+        "33": 4,
+        "36": 1,
         "6": 1
       },
       "missed_lines": [
-        27
+        29
       ],
       "statements": 15,
       "percentage": "93.3%"
     }
-  }
-  ...
+  },
+  "excluded_locations": [
+    ...
+  ]
 }
 ```
 
@@ -89,22 +91,22 @@ The file will look something like this:
 
 ```bash
 TN:
-SF:A.0000000000000007.FooContract
+SF:contracts/FooContract.cdc
 DA:6,1
-DA:14,1
-DA:18,9
-DA:19,1
-DA:20,8
+DA:15,1
+DA:20,9
 DA:21,1
-DA:22,7
+DA:22,8
 DA:23,1
-DA:24,6
+DA:24,7
 DA:25,1
-DA:26,5
-DA:27,0
-DA:30,5
-DA:31,4
-DA:34,1
+DA:26,6
+DA:27,1
+DA:28,5
+DA:29,0
+DA:32,5
+DA:33,4
+DA:36,1
 LF:15
 LH:14
 end_of_record
@@ -163,8 +165,8 @@ Coverage: 72.6% of statements
 
 The generated `coverage.json` file is somewhat more elaborate, for this test file. By viewing its content, we find the following keys:
 
-- `A.0000000000000007.ArrayUtils`
-- `A.0000000000000007.StringUtils`
+- `contracts/ArrayUtils.cdc`
+- `contracts/StringUtils.cdc`
 
 Locations that start with `A.` are contracts deployed to an account, ones that start with `s.` are scripts, and ones that start with `t.` are transactions.
 
@@ -173,7 +175,7 @@ that's why it is included in the resulting coverage report.
 
 **Note:** These two contracts are taken from: https://github.com/green-goo-dao/flow-utils. They are copied here for demonstration purposes. To get the original source code, visit the above repository.
 
-For viewing the coverage report of the `StringUtils` smart contract, we can just consult the value of the `A.0000000000000007.StringUtils` key, in the `coverage.json` file.
+For viewing the coverage report of the `StringUtils` smart contract, we can just consult the value of the `contracts/StringUtils.cdc` key, in the `coverage.json` file.
 
 Note that the above examples of tests could be best described as unit tests.
 
@@ -181,9 +183,6 @@ There is also a more advanced example of integration tests for the `ApprovalVoti
 
 ```bash
 flow test --cover tests/test_approval_voting.cdc
-11:31AM INF LOG: "Proposals Initialized!"
-11:31AM INF LOG: "Ballot transferred to voter"
-11:31AM INF LOG: "Vote cast and tallied"
 
 Test results: "tests/test_approval_voting.cdc"
 - PASS: testInitializeEmptyProposals
@@ -193,7 +192,7 @@ Test results: "tests/test_approval_voting.cdc"
 - PASS: testCastVoteOnMissingProposal
 - PASS: testCastVote
 - PASS: testViewVotes
-Coverage: 82.7% of statements
+Coverage: 92.1% of statements
 ```
 
 ## For Emulator
