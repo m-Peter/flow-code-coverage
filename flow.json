@@ -23,6 +23,12 @@
       "aliases": {
         "testing": "0x0000000000000007"
       }
+    },
+    "SolidityContractsRegistry": {
+      "source": "contracts/SolidityContractsRegistry.cdc",
+      "aliases": {
+        "testing": "0x0000000000000007"
+      }
     }
   },
   "networks": {
@@ -41,7 +47,8 @@
         "FooContract",
         "ArrayUtils",
         "StringUtils",
-        "ApprovalVoting"
+        "ApprovalVoting",
+        "SolidityContractsRegistry"
       ]
     }
   }
